@@ -7,12 +7,17 @@ export default function Home() {
     { name: "Pediatrics", icon: "👶" },
     { name: "General Practice", icon: "🩺" },
     { name: "Dermatology", icon: "✨" },
+    { name: "Neurology", icon: "🧠" },
+    { name: "Orthopedics", icon: "🦴" },
+    { name: "Ophthalmology", icon: "👁️" },
+    { name: "Dentistry", icon: "🦷" },
+    { name: "Psychiatry", icon: "🛋️" },
   ];
 
   return (
     <div className="home-container">
       <section className="hero-section">
-        <h1>Find and Book the Best Doctors Near You</h1>
+        <h1>Find and Book the Best Doctors in Addis Ababa</h1>
         <p>
           Skip the waiting room. Book your next medical appointment online in
           seconds.

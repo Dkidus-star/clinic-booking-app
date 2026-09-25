@@ -1,11 +1,10 @@
 import "../App.css";
 
 export default function Appointments() {
-  // Mock data for user's appointments
   const myAppointments = [
     {
       id: "101",
-      doctorName: "Dr. Sarah Jenkins",
+      doctorName: "Dr. Dawit Tadesse",
       specialty: "Cardiology",
       date: "Oct 15, 2026",
       time: "10:30 AM",
@@ -13,8 +12,8 @@ export default function Appointments() {
     },
     {
       id: "102",
-      doctorName: "Dr. Emily Rodriguez",
-      specialty: "General Practice",
+      doctorName: "Dr. Mahlet Bekele",
+      specialty: "Pediatrics",
       date: "Sep 10, 2026",
       time: "02:00 PM",
       status: "Completed",
