@@ -149,6 +149,11 @@
   cursor: pointer;
   transition: all 0.2s ease;
 }
+.time-slot.selected {
+  background-color: #007bff;
+  color: white;
+  border-color: #007bff;
+}
 
 .time-slot:hover,
 .time-slot:focus {

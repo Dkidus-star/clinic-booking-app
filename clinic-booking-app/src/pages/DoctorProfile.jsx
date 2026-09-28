@@ -1,9 +1,12 @@
-import { useParams, Link } from "react-router-dom";
+import { useState } from "react";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { doctors } from "../data/mockData";
 import "../App.css";
 
 export default function DoctorProfile() {
   const { id } = useParams();
+  const navigate = useNavigate();
+  const [selectedTime, setSelectedTime] = useState("");
 
   const doctor = doctors.find((doc) => doc.id === id);
 
@@ -18,8 +21,46 @@ export default function DoctorProfile() {
     );
   }
 
+  const handleBooking = () => {
+    if (!selectedTime) {
+      alert("Please select a time slot first.");
+      return;
+    }
+
+    // Check if user is logged in
+    const user = JSON.parse(localStorage.getItem("clinicUser"));
+    if (!user) {
+      alert("Please login to book an appointment.");
+      navigate("/login");
+      return;
+    }
+
+    // Create a new appointment object
+    const newAppointment = {
+      id: Date.now().toString(), // Generate a unique ID using the current timestamp
+      doctorName: doctor.name,
+      specialty: doctor.specialty,
+      date: "Oct 20, 2026", // Mock upcoming date
+      time: selectedTime,
+      status: "Confirmed",
+    };
+
+    // Retrieve existing appointments (or an empty array if none exist), add the new one, and save it
+    const existingAppointments =
+      JSON.parse(localStorage.getItem("clinicAppointments")) || [];
+    existingAppointments.push(newAppointment);
+    localStorage.setItem(
+      "clinicAppointments",
+      JSON.stringify(existingAppointments),
+    );
+
+    navigate("/appointments");
+  };
+
+  const availableSlots = ["09:00 AM", "10:30 AM", "01:00 PM", "03:30 PM"];
+
   return (
-    <div className="profile-container">
+    <div className="profile-container fade-in">
       <Link to="/doctors" className="back-link">
         ← Back to Doctors
       </Link>
@@ -43,13 +84,20 @@ export default function DoctorProfile() {
         <p>Select an available time slot:</p>
 
         <div className="time-slots">
-          <button className="time-slot">09:00 AM</button>
-          <button className="time-slot">10:30 AM</button>
-          <button className="time-slot">01:00 PM</button>
-          <button className="time-slot">03:30 PM</button>
+          {availableSlots.map((time) => (
+            <button
+              key={time}
+              className={`time-slot ${selectedTime === time ? "selected" : ""}`}
+              onClick={() => setSelectedTime(time)}
+            >
+              {time}
+            </button>
+          ))}
         </div>
 
-        <button className="book-btn confirm-btn">Confirm Booking</button>
+        <button className="book-btn confirm-btn" onClick={handleBooking}>
+          Confirm Booking
+        </button>
       </div>
     </div>
   );
