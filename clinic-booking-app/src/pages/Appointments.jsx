@@ -6,14 +6,17 @@ export default function Appointments() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("clinicUser"));
 
-  // 1. FIX: Read from localStorage directly during state initialization
-  // Using an arrow function here ensures this only runs once when the page loads
-  const [myAppointments] = useState(() => {
+  // Read from localStorage directly during state initialization and filter for the logged-in user
+  const [myAppointments, setMyAppointments] = useState(() => {
     const saved = localStorage.getItem("clinicAppointments");
-    return saved ? JSON.parse(saved) : [];
+    if (saved && user) {
+      const allAppointments = JSON.parse(saved);
+      return allAppointments.filter((appt) => appt.userEmail === user.email);
+    }
+    return [];
   });
 
-  // 2. Keep useEffect ONLY for handling the unauthorized redirect
+  // Handle unauthorized redirect
   useEffect(() => {
     if (!user) {
       navigate("/login");

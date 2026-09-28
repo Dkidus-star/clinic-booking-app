@@ -35,17 +35,18 @@ export default function DoctorProfile() {
       return;
     }
 
-    // Create a new appointment object
+    // Create a new appointment object tied to the user's email
     const newAppointment = {
-      id: Date.now().toString(), // Generate a unique ID using the current timestamp
+      id: Date.now().toString(),
+      userEmail: user.email,
       doctorName: doctor.name,
       specialty: doctor.specialty,
-      date: "Oct 20, 2026", // Mock upcoming date
+      date: "Oct 20, 2026",
       time: selectedTime,
       status: "Confirmed",
     };
 
-    // Retrieve existing appointments (or an empty array if none exist), add the new one, and save it
+    // Retrieve existing appointments, add the new one, and save it
     const existingAppointments =
       JSON.parse(localStorage.getItem("clinicAppointments")) || [];
     existingAppointments.push(newAppointment);
