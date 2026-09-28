@@ -1,13 +1,18 @@
 import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import "../App.css";
 
 export default function Login() {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    console.log("Login attempted with:", { email, password });
+
+    localStorage.setItem("clinicUser", JSON.stringify({ email: email }));
+
+    navigate("/appointments");
   };
 
   return (
@@ -42,15 +47,9 @@ export default function Login() {
           </div>
 
           <button type="submit" className="primary-btn login-btn">
-            Login
+            Secure Login
           </button>
         </form>
-
-        <div className="login-footer">
-          <p>
-            Don't have an account? <a href="#">Register here</a>
-          </p>
-        </div>
       </div>
     </div>
   );
