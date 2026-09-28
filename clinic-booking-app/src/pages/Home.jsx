@@ -3,12 +3,19 @@ import "../App.css";
 
 export default function Home() {
   const specialties = [
-    { name: "Primary Care (አጠቃላይ ህክምና)", icon: "🩺" },
-    { name: "Infectious Disease (ተላላፊ በሽታዎች)", icon: "🦠" },
-    { name: "Cardiology (የልብ ህክምና)", icon: "❤️" },
-    { name: "Pediatrics (የህፃናት ህክምና)", icon: "👶" },
-    { name: "Dermatology (የቆዳ ህክምና)", icon: "✨" },
-    { name: "Psychiatry & Support (ስነ-ልቦና)", icon: "🤝" },
+    {
+      name: "Primary Care (አጠቃላይ ህክምና)",
+      icon: "🩺",
+      filter: "General Practice",
+    },
+    { name: "Neurology (የነርቭ ህክምና)", icon: "🧠", filter: "Neurology" },
+    { name: "Cardiology (የልብ ህክምና)", icon: "❤️", filter: "Cardiology" },
+    { name: "Pediatrics (የህፃናት ህክምና)", icon: "👶", filter: "Pediatrics" },
+    { name: "Dermatology (የቆዳ ህክምና)", icon: "✨", filter: "Dermatology" },
+    { name: "Orthopedics (የአጥንት ህክምና)", icon: "🦴", filter: "Orthopedics" },
+    { name: "Ophthalmology (የአይን ህክምና)", icon: "👁️", filter: "Ophthalmology" },
+    { name: "Dentistry (የጥርስ ህክምና)", icon: "🦷", filter: "Dentistry" },
+    { name: "Psychiatry & Support (ስነ-ልቦና)", icon: "🤝", filter: "Psychiatry" },
   ];
 
   const comprehensiveServices = [
@@ -36,7 +43,6 @@ export default function Home() {
 
   return (
     <div className="home-container fade-in">
-      {/* Hero Section */}
       <section className="hero-section">
         <div className="hero-content slide-up">
           <h1>Inclusive Primary & Specialty Care in Addis Ababa</h1>
@@ -62,7 +68,6 @@ export default function Home() {
         </div>
       </section>
 
-      {/* New Avita-Inspired Services Section */}
       <section className="services-section slide-up-delay">
         <h2 className="section-title">Comprehensive Services | የተሟላ አገልግሎቶች</h2>
         <div className="services-grid">
@@ -76,17 +81,22 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Specialties Directory */}
       <section className="specialties-section slide-up-delay">
         <h2 className="section-title">
           Browse Providers by Specialty | በህክምና ዘርፍ ይፈልጉ
         </h2>
         <div className="specialties-grid">
           {specialties.map((spec, index) => (
-            <div key={index} className="specialty-card">
-              <span className="specialty-icon">{spec.icon}</span>
-              <h3>{spec.name}</h3>
-            </div>
+            <Link
+              to={`/doctors?specialty=${encodeURIComponent(spec.filter)}`}
+              key={index}
+              style={{ textDecoration: "none", color: "inherit" }}
+            >
+              <div className="specialty-card">
+                <span className="specialty-icon">{spec.icon}</span>
+                <h3>{spec.name}</h3>
+              </div>
+            </Link>
           ))}
         </div>
       </section>
