@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import toast from "react-hot-toast"; // Imported toast for the cancel notification
 import "../App.css";
 
 const listVariants = {
@@ -40,6 +41,24 @@ export default function Appointments() {
   }, [user, navigate]);
 
   if (!user) return null;
+
+  // New function to handle cancellation
+  const cancelAppointment = (id) => {
+    // 1. Remove from the local state so the UI updates instantly
+    const updatedMyAppointments = myAppointments.filter(
+      (appt) => appt.id !== id,
+    );
+    setMyAppointments(updatedMyAppointments);
+
+    // 2. Remove from global localStorage so it persists after refreshing
+    const allSaved =
+      JSON.parse(localStorage.getItem("clinicAppointments")) || [];
+    const updatedAllSaved = allSaved.filter((appt) => appt.id !== id);
+    localStorage.setItem("clinicAppointments", JSON.stringify(updatedAllSaved));
+
+    // 3. Trigger a success notification
+    toast.success("Appointment canceled successfully.");
+  };
 
   return (
     <div className="appointments-container">
@@ -100,10 +119,33 @@ export default function Appointments() {
                   <span>⏰ {appt.time}</span>
                 </div>
               </div>
-              <div className="appt-status">
+
+              {/* Added flex column layout for the status and the new cancel button */}
+              <div
+                className="appt-status"
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  alignItems: "flex-end",
+                  gap: "0.8rem",
+                }}
+              >
                 <span className={`status-badge ${appt.status.toLowerCase()}`}>
                   {appt.status}
                 </span>
+                <button
+                  onClick={() => cancelAppointment(appt.id)}
+                  style={{
+                    background: "none",
+                    border: "none",
+                    color: "#dc2626",
+                    fontWeight: "600",
+                    cursor: "pointer",
+                    padding: 0,
+                  }}
+                >
+                  ✕ Cancel
+                </button>
               </div>
             </motion.div>
           ))}
