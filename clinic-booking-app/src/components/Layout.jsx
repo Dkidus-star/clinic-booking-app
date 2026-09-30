@@ -1,11 +1,9 @@
-import { Link, Outlet, useNavigate, useLocation } from "react-router-dom";
+import { NavLink, Outlet, useNavigate } from "react-router-dom";
+import Footer from "./Footer";
 import "../App.css";
 
 export default function Layout() {
   const navigate = useNavigate();
-
-  const location = useLocation();
-
   const user = JSON.parse(localStorage.getItem("clinicUser"));
 
   const handleLogout = () => {
@@ -14,38 +12,55 @@ export default function Layout() {
   };
 
   return (
-    <div>
+    <div className="app-wrapper">
       <nav className="nav-bar">
-        <div style={{ display: "flex", gap: "1.5rem", alignItems: "center" }}>
-          <Link to="/">Home</Link>
-          <Link to="/doctors">Find a Doctor</Link>
-          <Link to="/appointments">My Appointments</Link>
+        <div className="nav-brand">
+          <span style={{ fontSize: "1.5rem", marginRight: "1rem" }}>🏥</span>
+          <strong>Addis Clinic</strong>
         </div>
 
-        <div style={{ marginLeft: "auto" }}>
-          {user ? (
-            <button
-              onClick={handleLogout}
-              style={{
-                background: "none",
-                border: "none",
-                cursor: "pointer",
-                color: "#dc2626",
-                fontWeight: "600",
-              }}
+        <div className="nav-links">
+          {/* NavLink automatically applies an 'active' class when the route matches */}
+          <NavLink
+            to="/"
+            className={({ isActive }) => (isActive ? "active-link" : "")}
+          >
+            Home
+          </NavLink>
+          <NavLink
+            to="/doctors"
+            className={({ isActive }) => (isActive ? "active-link" : "")}
+          >
+            Find a Doctor
+          </NavLink>
+          {user && (
+            <NavLink
+              to="/appointments"
+              className={({ isActive }) => (isActive ? "active-link" : "")}
             >
+              My Appointments
+            </NavLink>
+          )}
+        </div>
+
+        <div className="nav-auth">
+          {user ? (
+            <button onClick={handleLogout} className="logout-btn">
               Logout
             </button>
           ) : (
-            <Link to="/login" style={{ color: "#007bff", fontWeight: "600" }}>
+            <NavLink to="/login" className="login-link">
               Login
-            </Link>
+            </NavLink>
           )}
         </div>
       </nav>
+
       <main className="main-content">
         <Outlet />
       </main>
+
+      <Footer />
     </div>
   );
 }
