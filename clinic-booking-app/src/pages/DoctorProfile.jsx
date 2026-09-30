@@ -1,5 +1,7 @@
 import { useState } from "react";
 import { useParams, Link, useNavigate } from "react-router-dom";
+import { motion } from "framer-motion"; // <-- Import motion
+import toast from "react-hot-toast"; // <-- Import toast
 import { doctors } from "../data/mockData";
 import "../App.css";
 
@@ -10,32 +12,21 @@ export default function DoctorProfile() {
 
   const doctor = doctors.find((doc) => doc.id === id);
 
-  if (!doctor) {
-    return (
-      <div className="profile-container">
-        <h2>Doctor not found</h2>
-        <Link to="/doctors" className="back-link">
-          ← Back to Doctors
-        </Link>
-      </div>
-    );
-  }
+  if (!doctor) return <h2>Doctor not found</h2>;
 
   const handleBooking = () => {
     if (!selectedTime) {
-      alert("Please select a time slot first.");
+      toast.error("Please select a time slot first."); // <-- Replaced alert
       return;
     }
 
-    // Check if user is logged in
     const user = JSON.parse(localStorage.getItem("clinicUser"));
     if (!user) {
-      alert("Please login to book an appointment.");
+      toast.error("Please login to book an appointment."); // <-- Replaced alert
       navigate("/login");
       return;
     }
 
-    // Create a new appointment object tied to the user's email
     const newAppointment = {
       id: Date.now().toString(),
       userEmail: user.email,
@@ -46,7 +37,6 @@ export default function DoctorProfile() {
       status: "Confirmed",
     };
 
-    // Retrieve existing appointments, add the new one, and save it
     const existingAppointments =
       JSON.parse(localStorage.getItem("clinicAppointments")) || [];
     existingAppointments.push(newAppointment);
@@ -55,13 +45,19 @@ export default function DoctorProfile() {
       JSON.stringify(existingAppointments),
     );
 
+    toast.success(`Appointment booked with ${doctor.name}!`); // <-- Added success toast
     navigate("/appointments");
   };
 
   const availableSlots = ["09:00 AM", "10:30 AM", "01:00 PM", "03:30 PM"];
 
   return (
-    <div className="profile-container fade-in">
+    <motion.div
+      className="profile-container"
+      initial={{ opacity: 0, y: 20 }}
+      animate={{ opacity: 1, y: 0 }}
+      transition={{ duration: 0.5 }}
+    >
       <Link to="/doctors" className="back-link">
         ← Back to Doctors
       </Link>
@@ -80,7 +76,10 @@ export default function DoctorProfile() {
         </div>
       </div>
 
-      <div className="booking-section">
+      <motion.div
+        className="booking-section"
+        whileHover={{ boxShadow: "0 10px 25px -5px rgba(0, 0, 0, 0.1)" }}
+      >
         <h3>Book an Appointment</h3>
         <p>Select an available time slot:</p>
 
@@ -96,10 +95,14 @@ export default function DoctorProfile() {
           ))}
         </div>
 
-        <button className="book-btn confirm-btn" onClick={handleBooking}>
+        <motion.button
+          whileTap={{ scale: 0.95 }} // <-- Button shrinks slightly when clicked
+          className="book-btn confirm-btn"
+          onClick={handleBooking}
+        >
           Confirm Booking
-        </button>
-      </div>
-    </div>
+        </motion.button>
+      </motion.div>
+    </motion.div>
   );
 }

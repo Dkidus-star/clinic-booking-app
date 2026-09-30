@@ -1,85 +1,69 @@
 import { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { motion } from "framer-motion";
+import toast from "react-hot-toast";
 import "../App.css";
 
 export default function Login() {
   const [isLoginMode, setIsLoginMode] = useState(true);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
-  const [error, setError] = useState("");
   const navigate = useNavigate();
 
   const handleSubmit = (e) => {
     e.preventDefault();
-    setError("");
-
-    // Fetch existing registered users, or default to an empty array
     const registeredUsers =
       JSON.parse(localStorage.getItem("clinicRegisteredUsers")) || [];
 
     if (isLoginMode) {
-      // LOGIN LOGIC
       const existingUser = registeredUsers.find((u) => u.email === email);
-
       if (!existingUser) {
-        setError("Account not found. Please sign up.");
+        toast.error("Account not found. Please sign up.");
         return;
       }
       if (existingUser.password !== password) {
-        setError("Incorrect password. Please try again.");
+        toast.error("Incorrect password. Please try again.");
         return;
       }
 
-      // Success: Log them in
       localStorage.setItem(
         "clinicUser",
         JSON.stringify({ email: existingUser.email }),
       );
+      toast.success("Welcome back!");
       navigate("/appointments");
     } else {
-      // SIGN UP LOGIC
       const userExists = registeredUsers.some((u) => u.email === email);
-
       if (userExists) {
-        setError("Email already in use. Please login.");
+        toast.error("Email already in use. Please login.");
         return;
       }
 
-      // Success: Register and auto-log them in
       registeredUsers.push({ email, password });
       localStorage.setItem(
         "clinicRegisteredUsers",
         JSON.stringify(registeredUsers),
       );
       localStorage.setItem("clinicUser", JSON.stringify({ email }));
+      toast.success("Account created successfully!");
       navigate("/appointments");
     }
   };
 
   return (
     <div className="login-container">
-      <div className="login-card">
+      <motion.div
+        className="login-card"
+        initial={{ opacity: 0, y: 40, scale: 0.95 }}
+        animate={{ opacity: 1, y: 0, scale: 1 }}
+        transition={{ duration: 0.5, ease: "easeOut" }}
+      >
         <h2>{isLoginMode ? "Welcome Back" : "Create an Account"}</h2>
         <p>
           {isLoginMode
             ? "Login to manage your medical appointments."
             : "Sign up to start booking appointments."}
         </p>
-
-        {error && (
-          <div
-            style={{
-              color: "#dc2626",
-              backgroundColor: "#fef2f2",
-              padding: "0.8rem",
-              borderRadius: "6px",
-              marginBottom: "1rem",
-              fontSize: "0.9rem",
-            }}
-          >
-            {error}
-          </div>
-        )}
 
         <form onSubmit={handleSubmit} className="login-form">
           <div className="form-group">
@@ -106,9 +90,14 @@ export default function Login() {
             />
           </div>
 
-          <button type="submit" className="primary-btn login-btn">
+          <motion.button
+            whileHover={{ scale: 1.02 }}
+            whileTap={{ scale: 0.98 }}
+            type="submit"
+            className="primary-btn login-btn"
+          >
             {isLoginMode ? "Secure Login" : "Sign Up"}
-          </button>
+          </motion.button>
         </form>
 
         <div className="login-footer">
@@ -117,10 +106,7 @@ export default function Login() {
               ? "Don't have an account? "
               : "Already have an account? "}
             <button
-              onClick={() => {
-                setIsLoginMode(!isLoginMode);
-                setError("");
-              }}
+              onClick={() => setIsLoginMode(!isLoginMode)}
               style={{
                 background: "none",
                 border: "none",
@@ -134,7 +120,7 @@ export default function Login() {
             </button>
           </p>
         </div>
-      </div>
+      </motion.div>
     </div>
   );
 }

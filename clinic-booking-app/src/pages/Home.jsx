@@ -1,5 +1,19 @@
 import { Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import "../App.css";
+
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 },
+  },
+};
+
+const itemVariants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.5, ease: "easeOut" } },
+};
 
 export default function Home() {
   const specialties = [
@@ -42,9 +56,15 @@ export default function Home() {
   ];
 
   return (
-    <div className="home-container fade-in">
+    <div className="home-container">
+      {/* Hero Section */}
       <section className="hero-section">
-        <div className="hero-content slide-up">
+        <motion.div
+          className="hero-content"
+          initial={{ opacity: 0, y: 30 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6, ease: "easeOut" }}
+        >
           <h1>Inclusive Primary & Specialty Care in Addis Ababa</h1>
           <h2 className="amharic-title">በአዲስ አበባ ሁሉን አቀፍ እና ልዩ ህክምና</h2>
           <p>
@@ -54,51 +74,101 @@ export default function Home() {
           <p className="amharic-subtext">
             ከክሊኒክም በላይ ነን። ለእርስዎ የተሟላ ጤና የምንተጋ የጤና ማዕከል ነን።
           </p>
-          <Link to="/doctors" className="primary-btn">
-            Book Your Appointment | ቀጠሮ ይያዙ
-          </Link>
-        </div>
 
-        <div className="hero-image-container fade-in-delay">
+          <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
+            <Link
+              to="/doctors"
+              className="primary-btn"
+              style={{ display: "inline-block" }}
+            >
+              Book Your Appointment | ቀጠሮ ይያዙ
+            </Link>
+          </motion.div>
+        </motion.div>
+
+        <motion.div
+          className="hero-image-container"
+          initial={{ opacity: 0, x: 50 }}
+          animate={{ opacity: 1, x: 0 }}
+          transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
+        >
           <img
             src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=800&auto=format&fit=crop"
             alt="Compassionate Medical Professional"
             className="hero-image"
           />
-        </div>
+        </motion.div>
       </section>
 
-      <section className="services-section slide-up-delay">
-        <h2 className="section-title">Comprehensive Services | የተሟላ አገልግሎቶች</h2>
-        <div className="services-grid">
+      {/* Services Section */}
+      <section className="services-section">
+        <motion.h2
+          className="section-title"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+        >
+          Comprehensive Services | የተሟላ አገልግሎቶች
+        </motion.h2>
+        <motion.div
+          className="services-grid"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-50px" }}
+        >
           {comprehensiveServices.map((service, index) => (
-            <div key={index} className="service-card">
+            <motion.div
+              key={index}
+              className="service-card"
+              variants={itemVariants}
+            >
               <span className="service-icon">{service.icon}</span>
               <h3>{service.title}</h3>
               <p>{service.desc}</p>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       </section>
 
-      <section className="specialties-section slide-up-delay">
-        <h2 className="section-title">
+      {/* Specialties Directory */}
+      <section className="specialties-section">
+        <motion.h2
+          className="section-title"
+          initial={{ opacity: 0 }}
+          whileInView={{ opacity: 1 }}
+          viewport={{ once: true }}
+        >
           Browse Providers by Specialty | በህክምና ዘርፍ ይፈልጉ
-        </h2>
-        <div className="specialties-grid">
+        </motion.h2>
+        <motion.div
+          className="specialties-grid"
+          variants={containerVariants}
+          initial="hidden"
+          whileInView="show"
+          viewport={{ once: true, margin: "-50px" }}
+        >
           {specialties.map((spec, index) => (
             <Link
               to={`/doctors?specialty=${encodeURIComponent(spec.filter)}`}
               key={index}
               style={{ textDecoration: "none", color: "inherit" }}
             >
-              <div className="specialty-card">
+              <motion.div
+                className="specialty-card"
+                variants={itemVariants}
+                whileHover={{
+                  y: -5,
+                  borderColor: "#007bff",
+                  boxShadow: "0 10px 15px rgba(0,0,0,0.05)",
+                }}
+              >
                 <span className="specialty-icon">{spec.icon}</span>
-                <h3>{spec.name}</h3>
-              </div>
+                <h3 style={{ textAlign: "center" }}>{spec.name}</h3>
+              </motion.div>
             </Link>
           ))}
-        </div>
+        </motion.div>
       </section>
     </div>
   );

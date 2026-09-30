@@ -1,12 +1,29 @@
 import { useEffect, useState } from "react";
 import { useNavigate, Link } from "react-router-dom";
+import { motion } from "framer-motion";
 import "../App.css";
+
+const listVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.15 },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, x: -30 },
+  show: {
+    opacity: 1,
+    x: 0,
+    transition: { type: "spring", stiffness: 200, damping: 20 },
+  },
+};
 
 export default function Appointments() {
   const navigate = useNavigate();
   const user = JSON.parse(localStorage.getItem("clinicUser"));
 
-  // Read from localStorage directly during state initialization and filter for the logged-in user
   const [myAppointments, setMyAppointments] = useState(() => {
     const saved = localStorage.getItem("clinicAppointments");
     if (saved && user) {
@@ -16,25 +33,31 @@ export default function Appointments() {
     return [];
   });
 
-  // Handle unauthorized redirect
   useEffect(() => {
     if (!user) {
       navigate("/login");
     }
   }, [user, navigate]);
 
-  // Prevent rendering if user is missing
   if (!user) return null;
 
   return (
-    <div className="appointments-container fade-in">
-      <h2 className="page-title">Welcome, {user.email.split("@")[0]}!</h2>
-      <p style={{ marginBottom: "2rem", color: "#64748b" }}>
-        Here are your upcoming appointments.
-      </p>
+    <div className="appointments-container">
+      <motion.div
+        initial={{ opacity: 0, y: -20 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ duration: 0.5 }}
+      >
+        <h2 className="page-title">Welcome, {user.email.split("@")[0]}!</h2>
+        <p style={{ marginBottom: "2rem", color: "#64748b" }}>
+          Here are your upcoming appointments.
+        </p>
+      </motion.div>
 
       {myAppointments.length === 0 ? (
-        <div
+        <motion.div
+          initial={{ opacity: 0, scale: 0.9 }}
+          animate={{ opacity: 1, scale: 1 }}
           style={{
             textAlign: "center",
             padding: "3rem",
@@ -51,11 +74,24 @@ export default function Appointments() {
           >
             Browse Doctors
           </Link>
-        </div>
+        </motion.div>
       ) : (
-        <div className="appointments-list">
+        <motion.div
+          className="appointments-list"
+          variants={listVariants}
+          initial="hidden"
+          animate="show"
+        >
           {myAppointments.map((appt) => (
-            <div key={appt.id} className="appointment-card">
+            <motion.div
+              key={appt.id}
+              className="appointment-card"
+              variants={cardVariants}
+              whileHover={{
+                scale: 1.01,
+                boxShadow: "0 10px 15px -3px rgba(0, 0, 0, 0.1)",
+              }}
+            >
               <div className="appt-info">
                 <h3>{appt.doctorName}</h3>
                 <p className="doctor-specialty">{appt.specialty}</p>
@@ -69,9 +105,9 @@ export default function Appointments() {
                   {appt.status}
                 </span>
               </div>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
     </div>
   );

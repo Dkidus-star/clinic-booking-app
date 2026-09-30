@@ -1,14 +1,25 @@
 import { Link, useSearchParams } from "react-router-dom";
+import { motion } from "framer-motion";
 import { doctors } from "../data/mockData";
 import "../App.css";
 
+const containerVariants = {
+  hidden: { opacity: 0 },
+  show: {
+    opacity: 1,
+    transition: { staggerChildren: 0.1 },
+  },
+};
+
+const cardVariants = {
+  hidden: { opacity: 0, y: 20 },
+  show: { opacity: 1, y: 0, transition: { duration: 0.4 } },
+};
+
 export default function DoctorList() {
-  // Grab the search parameters from the URL
   const [searchParams] = useSearchParams();
   const specialtyFilter = searchParams.get("specialty");
 
-  // Filter the doctors based on the URL parameter.
-  // If there is no parameter, show all doctors.
   const displayedDoctors = specialtyFilter
     ? doctors.filter((doc) => doc.specialty === specialtyFilter)
     : doctors;
@@ -27,7 +38,6 @@ export default function DoctorList() {
           {specialtyFilter ? `${specialtyFilter}s` : "Available Providers"}
         </h2>
 
-        {/* Show a "Clear Filter" link if a filter is active */}
         {specialtyFilter && (
           <Link
             to="/doctors"
@@ -61,9 +71,22 @@ export default function DoctorList() {
           </Link>
         </div>
       ) : (
-        <div className="doctor-grid">
+        <motion.div
+          className="doctor-grid"
+          variants={containerVariants}
+          initial="hidden"
+          animate="show"
+        >
           {displayedDoctors.map((doctor) => (
-            <div key={doctor.id} className="doctor-card">
+            <motion.div
+              key={doctor.id}
+              className="doctor-card"
+              variants={cardVariants}
+              whileHover={{
+                y: -8,
+                boxShadow: "0 15px 30px -10px rgba(0,0,0,0.15)",
+              }}
+            >
               <img
                 src={doctor.image}
                 alt={doctor.name}
@@ -77,9 +100,9 @@ export default function DoctorList() {
               <Link to={`/doctors/${doctor.id}`} className="book-btn">
                 View Profile & Book
               </Link>
-            </div>
+            </motion.div>
           ))}
-        </div>
+        </motion.div>
       )}
     </div>
   );
