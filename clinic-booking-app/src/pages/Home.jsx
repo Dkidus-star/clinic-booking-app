@@ -1,5 +1,6 @@
 import { Link } from "react-router-dom";
 import { motion } from "framer-motion";
+import heroImg from "../assets/images/hero-image.jpg"; // <-- Added the import for your local image
 import "../App.css";
 
 const containerVariants = {
@@ -65,15 +66,13 @@ export default function Home() {
           animate={{ opacity: 1, y: 0 }}
           transition={{ duration: 0.6, ease: "easeOut" }}
         >
-          <h1>Inclusive Primary & Specialty Care in Addis Ababa</h1>
+          <h1>Inclusive Primary & Specialty Care </h1>
           <h2 className="amharic-title">በአዲስ አበባ ሁሉን አቀፍ እና ልዩ ህክምና</h2>
           <p>
             More than just a clinic. We are a comprehensive health care center
             dedicated to caring for the whole you without a label.
           </p>
-          <p className="amharic-subtext">
-            ከክሊኒክም በላይ ነን። ለእርስዎ የተሟላ ጤና የምንተጋ የጤና ማዕከል ነን።
-          </p>
+          <p className="amharic-subtext">ከክሊኒክም በላይ ነን። ለእርስዎ የተሟላ ጤና የምንተጋ።</p>
 
           <motion.div whileHover={{ scale: 1.05 }} whileTap={{ scale: 0.95 }}>
             <Link
@@ -92,8 +91,9 @@ export default function Home() {
           animate={{ opacity: 1, x: 0 }}
           transition={{ duration: 0.8, delay: 0.2, ease: "easeOut" }}
         >
+          {/* <-- Replaced the web URL with the local heroImg variable */}
           <img
-            src="https://images.unsplash.com/photo-1579684385127-1ef15d508118?q=80&w=800&auto=format&fit=crop"
+            src={heroImg}
             alt="Compassionate Medical Professional"
             className="hero-image"
           />
